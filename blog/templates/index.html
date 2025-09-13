@@ -1,0 +1,45 @@
+
+{% extends "base.html" %}
+
+{% block title %}홈입니다.{% endblock %}
+
+{% block content %}
+
+  <h1 class="mb-4 text-center">강의 동영상 갤러리</h1>
+
+  <!-- ▶ 큰 플레이어 영역 (처음엔 숨김) -->
+  <div id="video-player" class="d-none">
+    <button class="btn btn-secondary mb-3" onclick="backToList()">← 목록으로</button>
+    <div class="card shadow-sm">
+      <video id="player-video" class="w-100" controls style="max-height:70vh;"></video>
+      <div class="card-body">
+        <h3 id="player-title"></h3>
+        <p id="player-description"></p>
+        <p class="text-muted small">업로드: <span id="player-date"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ▶ 작은 카드 리스트 -->
+  <div id="video-list" class="row g-4">
+  {% for video in videos %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 shadow-sm">
+      <a href="{% url 'blog:video_detail' video.id %}">
+        <video class="card-img-top"
+               preload="metadata"
+               style="height:200px; object-fit:cover; cursor:pointer;">
+          <source src="{{ video.file.url }}" type="video/mp4">
+        </video>
+      </a>
+      <div class="card-body">
+        <h5 class="card-title">{{ video.title }}</h5>
+        <p class="card-text">{{ video.description|truncatechars:80 }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}

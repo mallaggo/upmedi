@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이메일 인증 실패</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-96 text-center">
+    <h2 class="text-xl font-bold mb-4 text-red-600">이메일 인증 실패</h2>
+    <p class="mb-4">인증 링크가 잘못되었거나 만료되었습니다.</p>
+    <a href="{% url 'who:signup' %}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">회원가입 다시하기</a>
+</div>
+</body>
+</html>

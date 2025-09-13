@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load crispy_forms_tags %}
+{% load static %}
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <div align="center">
+    <title>로그인</title>
+    </div>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+</head>
+<body>
+<div class="container" style="width:500px;" >
+     <h2 class="text-2xl font-bold mb-6 text-center">로그인</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div align="center">
+        <button type="submit" class="btn btn-primary">로그인</button>
+        </div>
+    </form>
+    <br>
+    <div align="center">
+     계정이 없나요? <a href="{% url 'who:signup' %}" class="text-blue-500">회원가입</a>
+    </div>
+</div>
+
+</body>
+</html>

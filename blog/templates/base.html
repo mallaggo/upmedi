@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load crispy_forms_tags %}
+{% load static %}
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+  <style>
+  #eventCarousel .carousel-item img {
+    height: 300px;         /* 원하는 세로 크기 */
+    object-fit: cover;     /* 꽉 채우되 비율 유지 */
+  }
+</style>
+
+</head>
+
+<body>
+<div class="container" style="width:1000px;">
+<nav>
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'blog:index' %}">홈으로</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">프로그래밍</a>
+    <div class="dropdown-menu" style="">
+      <h6 class="dropdown-header">Language</h6>
+      <a class="dropdown-item" href="#">C언어</a>
+      <a class="dropdown-item" href="#">JAVA</a>
+      <a class="dropdown-item" href="#">PYTHON</a>
+    </div>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">컴퓨터활용능력</a>
+    <div class="dropdown-menu" style="">
+      <a class="dropdown-item" href="#">컴퓨터활용능력1급</a>
+      <a class="dropdown-item" href="{% url 'blog:post_list' %}">컴퓨터활용능력2급</a>
+    </div>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">리눅스마스터</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">공사중...</a>
+  </li>
+
+
+   <!-- 검색창 -->
+<li class="nav-item ms-auto d-flex align-items-center">
+  <form class="d-flex align-items-center" role="search">
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control" placeholder="검색어 입력">
+      <button class="btn btn-primary" type="submit">검색</button>
+    </div>
+  </form>
+</li>
+
+<!-- 로그인 / 사용자 -->
+<li class="nav-item dropdown d-flex align-items-center">
+  {% if user.is_authenticated %}
+    <a class="nav-link dropdown-toggle text-danger-emphasis" href="#" id="userDropdown" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false" >
+      {{ user.username }}님
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+      <li>
+        <a class="dropdown-item " href="{% url 'who:logout' %}">로그아웃</a>
+      </li>
+    </ul>
+  {% else %}
+    <a class="nav-link" href="{% url 'who:login' %}">로그인</a>
+  {% endif %}
+</li>
+
+
+
+</ul>
+</nav>
+
+
+  <!-- 🚩 이벤트/공지 슬라이드 -->
+<div id="eventCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+
+  <!-- 하단 인디케이터 (점 버튼) -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="2"></button>
+  </div>
+
+  <!-- 슬라이드 아이템 -->
+  <div class="carousel-inner rounded shadow">
+    <div class="carousel-item active" data-bs-interval="4000">
+      <img src="{% static 'img/event1.jpg' %}" class="d-block w-100" alt="이벤트 1">
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+        <h5>📢 공지사항 1</h5>
+        <p>첫 번째 이벤트 설명을 여기에 작성</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-bs-interval="4000">
+      <img src="{% static 'img/event2.jpg' %}" class="d-block w-100" alt="이벤트 2">
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+        <h5>🎉 이벤트 2</h5>
+        <p>할인 및 혜택 안내</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-bs-interval="4000">
+      <img src="{% static 'img/event3.jpg' %}" class="d-block w-100" alt="이벤트 3">
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+        <h5>🔥 업데이트 소식</h5>
+        <p>신규 기능 출시 안내</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 좌우 컨트롤 -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+  </div>
+<main class="container py-5" style="width:1000px;">
+        {% block content %}
+        <!-- 각 페이지별 내용이 여기에 들어감 -->
+        {% endblock %}
+  </div>
+  </main>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script>
+function showVideo(fileUrl, title, description, date) {
+  // 리스트 숨기고 플레이어 보이기
+  document.getElementById('video-list').classList.add('d-none');
+  document.getElementById('video-player').classList.remove('d-none');
+
+  // 플레이어 정보 채우기
+  const player = document.getElementById('player-video');
+  player.src = fileUrl;
+  player.play();
+
+  document.getElementById('player-title').textContent = title;
+  document.getElementById('player-description').textContent = description;
+  document.getElementById('player-date').textContent = date;
+}
+
+function backToList() {
+  // 플레이어 정지
+  const player = document.getElementById('player-video');
+  player.pause();
+  player.src = "";
+
+  // 플레이어 숨기고 리스트 다시 보이기
+  document.getElementById('video-player').classList.add('d-none');
+  document.getElementById('video-list').classList.remove('d-none');
+}
+</script>
+</body>
+
+</html>

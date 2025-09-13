@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <h2>안녕하세요, {{ user.username }}님!</h2>
+    <p>회원가입을 완료하시려면 아래 버튼을 클릭해주세요:</p>
+    <p>
+        <a href="{{ verification_link }}" class="btn">이메일 인증하기</a>
+    </p>
+    <p>만약 본인이 요청하지 않았다면 이 메일은 무시하셔도 됩니다.</p>
+</body>
+</html>
