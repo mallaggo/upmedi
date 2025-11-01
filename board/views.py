@@ -19,13 +19,13 @@ def com2_list(request):
     page_obj = paginator.get_page(page_number)
 
     # 템플릿으로 전달
-    return render(request, 'com2/com2_list.html', {'page_obj': page_obj})
+    return render(request, 'community2/com2_list.html', {'page_obj': page_obj})
 
 
 
 def com2_detail(request, pk):
     doc = get_object_or_404(Com2, pk=pk)
-    return render(request, 'com2/com2_detail.html', {'doc': doc})
+    return render(request, 'community2/com2_detail.html', {'doc': doc})
 
 # def validate_file_size(value):
 #     max_size = 5 * 1024 * 1024  # 5MB
@@ -40,4 +40,4 @@ def com2_upload(request):
             return redirect('board:com2_list')
     else:
         form = Com2Form()
-    return render(request, 'com2/com2_upload.html', {'form': form})
+    return render(request, 'community2/com2_upload.html', {'form': form})
