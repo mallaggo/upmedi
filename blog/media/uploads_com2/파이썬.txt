@@ -1,0 +1,14 @@
+import random
+x = random.randint(1, 100)
+count=0
+
+while True:
+    y = int(input("입력: "))
+    count = count + 1
+    if x < y:
+        print("더 작은 숫자입니다")
+    elif x > y:
+        print("더 큰 숫자입니다")
+    elif x == y:
+        print(f"정답입니다 {count}번 만에 맞췄습니다")
+        break

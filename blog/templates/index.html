@@ -1,45 +1,272 @@
-
 {% extends "base.html" %}
 
-{% block title %}홈입니다.{% endblock %}
+{% load crispy_forms_tags %}
+{% load static %}
+
 
 {% block content %}
+    <!-- Products Start -->
+<div class="container-fluid about py-5">
+  <div class="container">
+    <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+      <h2 class="text-primary font-secondary">Lesson & Data</h2>
+      <h1 class="display-4 text-uppercase">Explore My Lesson</h1>
+    </div>
+    <div class="tab-class text-center">
+      <ul class="nav nav-pills d-inline-flex justify-content-center bg-dark text-uppercase border-inner p-4 mb-5">
+        <li class="nav-item">
+          <a class="nav-link text-white active" data-bs-toggle="pill" href="#tab-1">컴퓨터활용능력1급</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" data-bs-toggle="pill" href="#tab-2">컴퓨터활용능력2급</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" data-bs-toggle="pill" href="#tab-3">프로그래밍언어</a>
+        </li>
+      </ul>
 
-  <h1 class="mb-4 text-center">강의 동영상 갤러리</h1>
-
-  <!-- ▶ 큰 플레이어 영역 (처음엔 숨김) -->
-  <div id="video-player" class="d-none">
-    <button class="btn btn-secondary mb-3" onclick="backToList()">← 목록으로</button>
-    <div class="card shadow-sm">
-      <video id="player-video" class="w-100" controls style="max-height:70vh;"></video>
-      <div class="card-body">
-        <h3 id="player-title"></h3>
-        <p id="player-description"></p>
-        <p class="text-muted small">업로드: <span id="player-date"></span></p>
+      <div class="tab-content">
+  <div id="tab-1" class="tab-pane fade show p-0 active">
+    <div class="row g-3">
+      {% for subj in comwhal1 %}
+      <div class="col-lg-6">
+        <div class="d-flex h-100">
+          <div class="flex-shrink-0">
+            {% if user.is_authenticated %}
+              <div class="video-thumb logged-in"
+                   data-video="{{ request.scheme }}://{{ request.get_host }}{{ subj.video_file.url }}"
+                   style="position:relative; width:300px; height:170px; cursor:pointer;">
+                <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                            display:flex;align-items:center;justify-content:center;">
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+            {% else %}
+              <div class="video-thumb need-login"
+                   style="position:relative; width:300px; height:170px; cursor:pointer;">
+                <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                            display:flex;align-items:center;justify-content:center;">
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          <div class="d-flex flex-column justify-content-center text-start bg-secondary border-inner px-4">
+            <h5 class="text-uppercase">{{ subj.title }}</h5>
+            <span>{{ subj.description }}</span>
+          </div>
+        </div>
       </div>
+      {% endfor %}
     </div>
   </div>
 
-  <!-- ▶ 작은 카드 리스트 -->
-  <div id="video-list" class="row g-4">
-  {% for video in videos %}
-  <div class="col-md-6 col-lg-4">
-    <div class="card h-100 shadow-sm">
-      <a href="{% url 'blog:video_detail' video.id %}">
-        <video class="card-img-top"
-               preload="metadata"
-               style="height:200px; object-fit:cover; cursor:pointer;">
-          <source src="{{ video.file.url }}" type="video/mp4">
-        </video>
-      </a>
-      <div class="card-body">
-        <h5 class="card-title">{{ video.title }}</h5>
-        <p class="card-text">{{ video.description|truncatechars:80 }}</p>
+  <div id="tab-2" class="tab-pane fade show p-0">
+    <div class="row g-3">
+      {% for subj in comwhal2 %}
+      <div class="col-lg-6">
+        <div class="d-flex h-100">
+          <div class="flex-shrink-0">
+             {% if user.is_authenticated %}
+                  <div class="video-thumb logged-in"
+                       data-video="{{ request.scheme }}://{{ request.get_host }}{{ subj.video_file.url }}"
+                       style="position:relative; width:300px; height:170px; cursor:pointer;">
+                    <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                                display:flex;align-items:center;justify-content:center;">
+                      <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="video-thumb need-login"
+                       style="position:relative; width:300px; height:170px; cursor:pointer;">
+                    <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                                display:flex;align-items:center;justify-content:center;">
+                      <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                {% endif %}
+
+          </div>
+          <div class="d-flex flex-column justify-content-center text-start bg-secondary border-inner px-4">
+            <h5 class="text-uppercase">{{ subj.title }}</h5>
+            <span>{{ subj.description }}</span>
+          </div>
+        </div>
       </div>
+      {% endfor %}
     </div>
   </div>
-  {% endfor %}
+
+  <div id="tab-3" class="tab-pane fade show p-0">
+    <div class="row g-3">
+      {% for subj in language %}
+      <div class="col-lg-6">
+        <div class="d-flex h-100">
+          <div class="flex-shrink-0">
+             {% if user.is_authenticated %}
+                  <div class="video-thumb logged-in"
+                       data-video="{{ request.scheme }}://{{ request.get_host }}{{ subj.video_file.url }}"
+                       style="position:relative; width:300px; height:170px; cursor:pointer;">
+                    <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                                display:flex;align-items:center;justify-content:center;">
+                      <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="video-thumb need-login"
+                       style="position:relative; width:300px; height:170px; cursor:pointer;">
+                    <img src="{{ subj.thumbnail_image.url }}" class="img-fluid" style="width:300px; height:170px;" alt="">
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                                display:flex;align-items:center;justify-content:center;">
+                      <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                {% endif %}
+
+          </div>
+          <div class="d-flex flex-column justify-content-center text-start bg-secondary border-inner px-4">
+            <h5 class="text-uppercase">{{ subj.title }}</h5>
+            <span>{{ subj.description }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 
 
+    </div>
+  </div>
+</div>
+<!-- Products End -->
+
+
+   <!-- Testimonial Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+                <h2 class="text-primary font-secondary">Testimonial</h2>
+                <h1 class="display-4 text-uppercase">My Students Say!!!</h1>
+            </div>
+            <div class="owl-carousel testimonial-carousel">
+                <div class="testimonial-item bg-dark text-white border-inner p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img class="img-fluid flex-shrink-0" src="{% static 'img/daram.jpg' %}" style="width: 60px; height: 60px;">
+                        <div class="ps-3">
+                            <h4 class="text-primary text-uppercase mb-1">Teacher Name</h4>
+                            <span>person</span>
+                        </div>
+                    </div>
+                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam
+                    </p>
+                </div>
+                <div class="testimonial-item bg-dark text-white border-inner p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img class="img-fluid flex-shrink-0" src="{% static 'img/daram.jpg' %}" style="width: 60px; height: 60px;">
+                        <div class="ps-3">
+                            <h4 class="text-primary text-uppercase mb-1">Teacher Name</h4>
+                            <span>Profession</span>
+                        </div>
+                    </div>
+                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam
+                    </p>
+                </div>
+                <div class="testimonial-item bg-dark text-white border-inner p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img class="img-fluid flex-shrink-0" src="{% static 'img/daram.jpg' %}" style="width: 60px; height: 60px;">
+                        <div class="ps-3">
+                            <h4 class="text-primary text-uppercase mb-1">Teacher Name</h4>
+                            <span>Profession</span>
+                        </div>
+                    </div>
+                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam
+                    </p>
+                </div>
+                <div class="testimonial-item bg-dark text-white border-inner p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img class="img-fluid flex-shrink-0" src="{% static 'img/daram.jpg' %}" style="width: 60px; height: 60px;">
+                        <div class="ps-3">
+                            <h4 class="text-primary text-uppercase mb-1">Teacher Name</h4>
+                            <span>Profession</span>
+                        </div>
+                    </div>
+                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+
+    <!-- 모달 -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark">
+      <div class="modal-body p-0">
+        <video id="modalVideo" width="100%" controls>
+          <source src="" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+  const modalVideo = document.getElementById('modalVideo');
+
+  // 로그인된 경우: 모달 열기
+  document.querySelectorAll('.video-thumb.logged-in').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const videoUrl = thumb.dataset.video;
+      modalVideo.src = videoUrl;
+      modalVideo.load();
+      modal.show();
+    });
+  });
+
+  // 로그인 안 된 경우: 로그인 페이지로 이동 안내
+  document.querySelectorAll('.video-thumb.need-login').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      alert('로그인 후 이용할 수 있습니다.');
+      window.location.href = "{% url 'who:login' %}"; // 로그인 URL로 변경
+    });
+  });
+
+  // 모달 닫을 때 영상 멈추기
+  document.getElementById('videoModal').addEventListener('hidden.bs.modal', () => {
+    modalVideo.pause();
+    modalVideo.src = '';
+  });
+});
+</script>
+
+
+
 {% endblock %}
+
+
+

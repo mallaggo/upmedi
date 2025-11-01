@@ -1,0 +1,25 @@
+class Student:
+    def __init__(self,name,kor,eng,math):
+        self.name=name
+        self.kor=kor
+        self.eng=eng
+        self.math=math
+
+    def calc_avg:
+        self.avg=(self.kor+self.eng+self.math)/3
+
+    def display_info(self):
+        print(self.name,self.avg)
+
+    def save_to_file(self):
+        with open(score.txt,'w',encoding='utf-8') as f:
+
+name=input("이름: ")
+kor=int(input("국어: "))
+eng=int(input("영어: "))
+math=int(input("수학: "))
+
+s1=Student(name,kor,eng,math)
+s1.calc_avg()
+s1.display_info()
+s1.save_to_file()

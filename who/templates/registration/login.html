@@ -4,27 +4,42 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <div align="center">
     <title>로그인</title>
-    </div>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
+    <style>
+      /* 화면 전체를 flex로, 가운데 정렬 */
+      .full-height-center {
+        min-height: 100vh;             /* 브라우저 전체 높이 */
+        display: flex;
+        align-items: center;           /* 세로 가운데 */
+        justify-content: center;       /* 가로 가운데 */
+      }
+    </style>
 </head>
 <body>
-<div class="container" style="width:500px;" >
-     <h2 class="text-2xl font-bold mb-6 text-center">로그인</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div align="center">
-        <button type="submit" class="btn btn-primary">로그인</button>
-        </div>
-    </form>
-    <br>
-    <div align="center">
-     계정이 없나요? <a href="{% url 'who:signup' %}" class="text-blue-500">회원가입</a>
+    <!-- 홈으로 이동은 왼쪽 정렬 -->
+    <div class="container">
+      <h4 class="mb-3 text-start" style="color:#d35400;">
+        <a href="{% url 'blog:index' %}">&larr; 홈으로 이동</a>
+      </h4>
     </div>
-</div>
 
+    <!-- 로그인 박스 -->
+    <div class="full-height-center">
+      <div class="container" style="max-width:500px;">
+        <h2 class="text-2xl font-bold mb-4 text-center">로그인</h2>
+        <form method="post" class="p-4 rounded shadow" style="background-color:#fff8f0;">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">로그인</button>
+          </div>
+        </form>
+        <div class="text-center mt-3">
+          계정이 없나요? <a href="{% url 'who:signup' %}" class="text-blue-500">회원가입</a>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
+

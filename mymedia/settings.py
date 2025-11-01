@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g(76jgb1%%x=rh((x-m46nhm67@l1$-20bfg9-^ql#swalf&w1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['lee95.pythonanywhere.com','www.lee95.com','lee95.com']
 
 
 # Application definition
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "django_bootstrap5",
-    'who'
+    'who',
+    'board',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -84,12 +85,15 @@ WSGI_APPLICATION = 'mymedia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydb',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lee95$default',
+        'USER': 'lee95',
+        'PASSWORD': '##$$case7942',
+        'HOST': 'lee95.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        }
 
     }
 }
@@ -155,4 +159,4 @@ EMAIL_HOST_USER = 'wavecanon@naver.com'
 EMAIL_HOST_PASSWORD = 'SNMQEN583GSC'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # 이메일 인증 링크에 쓸 서비스 도메인
-SITE_DOMAIN = "http://127.0.0.1:8000"  # 개발 시 로컬 / 배포 시 실제 도메인
+SITE_DOMAIN = "http://www.lee95.com"  # 개발 시 로컬 / 배포 시 실제 도메인
