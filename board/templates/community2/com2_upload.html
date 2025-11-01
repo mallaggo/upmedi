@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container-fluid about py-5">
+
+  <h2 class="mb-3 text-center" style="color:#d35400;">자료 업로드</h2>
+
+  <form method="post"
+        enctype="multipart/form-data"
+        class="mx-auto p-4 rounded shadow text-center "
+
+        style="max-width:900px; background-color:#fff8f0;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-center">
+      <button type="submit"
+              class="btn px-4 py-2"
+              style="background-color:#e67e22; border-color:#e67e22; color:#fff;">
+        등록
+      </button>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

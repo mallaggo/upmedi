@@ -1,30 +1,22 @@
 {% extends "base.html" %}
 
+{% load crispy_forms_tags %}
+{% load static %}
+
+
 {% block content %}
-<div class="container py-4">
-  <h2>{{ video.title }}</h2>
-  <p>{{ video.description }}</p>
-  <p><small>업로드: {{ video.created_at|date:"Y-m-d H:i" }}</small></p>
+<div class="container mt-4 text-center">
+  <h2 class="mb-3">{{ video.title }}</h2>
+  <p class="mb-3">카테고리: {{ video.category.name }}</p>
 
-  {% if user.is_authenticated %}
-    <video id="player" controls autoplay width="100%">
-      <source src="{{ video.file.url }}" type="video/mp4">
-    </video>
+  <!-- HTML5 Video Player -->
+  <video width="640" height="360" controls>
+    <source src="{{ video.video_file.url }}" type="video/mp4">
+    브라우저가 동영상을 지원하지 않습니다.
+  </video>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        showVideo(
-          "{{ video.file.url }}",
-          "{{ video.title|escapejs }}",
-          "{{ video.description|escapejs }}",
-          "{{ video.created_at|date:"Y-m-d H:i" }}"
-        );
-      });
-    </script>
-  {% else %}
-    <p class="text-center">
-      <a href="{% url 'who:login' %}">로그인</a> 후 영상을 보실 수 있습니다.
-    </p>
-  {% endif %}
+  <div class="mt-4">
+    <a href="{% url 'blog:index' %}" class="btn btn-secondary">갤러리로 돌아가기</a>
+  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,5 @@
+각 앱의 migrations 폴더 안에 __init__.py 파일만 남기고 싹 지우기
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE django_migrations;
+DROP TABLE <앱의 모든 테이블들>;(모든 테이블 싹 비우자)
+SET FOREIGN_KEY_CHECKS=1;
