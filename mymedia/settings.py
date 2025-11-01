@@ -84,12 +84,12 @@ WSGI_APPLICATION = 'mymedia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mydb',
-        'USER': 'postgres',
+        'USER': 'root',
         'PASSWORD': '1234',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
 
     }
 }

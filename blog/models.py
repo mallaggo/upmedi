@@ -13,6 +13,20 @@ class Video(models.Model):
     def __str__(self):
         return self.title
 
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+class Subject(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    video_url = models.URLField()
+    thumbnail_url = models.URLField()
+
+    def __str__(self):
+        return self.title
 
 def validate_file_size(value):
     max_size = 5 * 1024 * 1024  # 5MB

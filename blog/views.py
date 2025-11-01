@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404
-from .models import Video,Post
+from .models import Video,Post,Subject
 
 
 def index(request):
@@ -29,3 +29,15 @@ def post_list(request):
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'post_detail.html', {'post': post})
+
+
+
+def gallery(request):
+    comwhal1 = Subject.objects.filter(category__name='comwhal1')
+    comwhal2 = Subject.objects.filter(category__name='comwhal2')
+    language = Subject.objects.filter(category__name='language')
+    return render(request, 'gallery.html', {
+        'comwhal1': comwhal1,
+        'comwhal2': comwhal2,
+        'language': language,
+    })
