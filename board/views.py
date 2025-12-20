@@ -41,3 +41,18 @@ def com2_upload(request):
     else:
         form = Com2Form()
     return render(request, 'community2/com2_upload.html', {'form': form})
+
+
+@login_required(login_url='who:login')
+def py_list(request):
+
+    # document_list = Com2.objects.all().order_by('-created_at')
+    #
+    # paginator = Paginator(document_list, 10)
+    #
+    # page_number = request.GET.get('page')
+    #
+    # page_obj = paginator.get_page(page_number)
+
+    # 템플릿으로 전달
+    return render(request, 'pystudy/pytable.html', )

@@ -5,8 +5,13 @@ __pycache__/
 # Django local/private settingsㅡ
 mymedia/local_settings.py
 mymedia/settings_production.py
+mymedia/settings.py
 
 # 환경 파일
 *.env
+
+# Django static/media
+blog/static/
+blog/media/
 
 
