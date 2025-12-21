@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+  <div class="p-4 rounded shadow" style="max-width:800px; margin:0 auto; background-color:#fff8f0;">
+    <h2 class="mb-3" style="color:#d35400;">{{ doc.title }}</h2>
+    <p class="mb-4">{{ doc.description }}</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{{ doc.upload.url }}"
+         class="btn px-4 py-2"
+         style="background-color:#e67e22; border-color:#e67e22; color:#fff;">
+        파일 다운로드
+      </a>
+      <a href="{% url 'board:com1_list' %}"
+         class="btn px-4 py-2"
+         style="background-color:#95a5a6; border-color:#95a5a6; color:#fff;">
+        목록으로
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

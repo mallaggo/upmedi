@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-5">
+  <div class="container">
+    <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+      <h2 class="text-primary font-secondary">컴활1급 자료실</h2>
+      <h1 class="display-4 text-uppercase">컴활1급 강의 영상</h1>
+    </div>
+
+    <div class="row g-5">
+      {% for subj in com1_movie_list %}
+      <div class="col-lg-4 col-md-6">
+        <div class="team-item">
+
+          {# ✅ 썸네일 #}
+          <div class="position-relative overflow-hidden"
+               style="cursor:pointer;"
+               {% if user.is_authenticated %}
+                 data-action="play"
+                 data-video-url="{{ subj.video_file.url }}"
+               {% else %}
+                 data-action="login"
+                 data-login-url="{% url 'who:login' %}?next={{ request.get_full_path|urlencode }}"
+               {% endif %}>
+
+            <img class="img-fluid w-100"
+                 src="{{ subj.thumbnail_image.url }}"
+                 alt="{{ subj.title|default:'강의 영상' }}"
+                 style="height: 220px; object-fit: cover;">
+
+            {# ▶ 플레이 아이콘 오버레이 #}
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                        display:flex;align-items:center;justify-content:center;
+                        background: rgba(0,0,0,0.25);">
+              <svg width="70" height="70" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                <path d="M8 5v14l11-7z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="bg-dark border-inner text-center p-4">
+            <h4 class="text-uppercase text-primary">{{ subj.title }}</h4>
+            <p class="text-white m-0">{{ subj.description }}</p>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-white" id="videoModalTitle">강의 영상</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-0">
+        <video id="videoPlayer" class="w-100" controls playsinline>
+          <source id="videoSource" src="" type="video/mp4">
+          브라우저가 video 태그를 지원하지 않습니다.
+        </video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ----------------여기서부터는 자료 게시물------------------   -->
+
+<div class="container mt-4">
+  <h2 class="mb-3 text-center">컴활1급 문서 자료실</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="text-center">제목</th>
+        <th class="text-center">설명</th>
+        <th class="text-center">날짜</th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+  {% for doc in page_obj %}
+  <tr>
+    <td class="text-center"><a href="{% url 'board:com1_detail' doc.pk %}">{{ doc.title }}</a></td>
+    <td class="text-center">{{ doc.description|truncatewords:10 }}</td>
+    <td class="text-center">{{ doc.created_at|date:"Y-m-d" }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="3" class="text-center">등록된 자료가 없습니다.</td></tr>
+  {% endfor %}
+</tbody>
+
+
+  </table>
+  <div class="text-center">
+  <a class="btn btn-primary mb-3 text-center" href="{% url 'board:com1_upload' %}">자료 업로드</a>
+  </div>
+</div>
+
+<nav aria-label="Page navigation" class="mt-3">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">이전</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">이전</span>
+      </li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active">
+          <span class="page-link">{{ num }}</span>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}">다음</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">다음</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
+
+<script>
+document.addEventListener("click", function (e) {
+  const card = e.target.closest("[data-action]");
+  if (!card) return;
+
+  const action = card.dataset.action;
+
+  if (action === "login") {
+    window.location.href = card.dataset.loginUrl;
+    return;
+  }
+
+  if (action === "play") {
+    const url = card.dataset.videoUrl;
+    const title = card.closest(".team-item")?.querySelector("h4")?.innerText || "강의 영상";
+
+    const source = document.getElementById("videoSource");
+    const player = document.getElementById("videoPlayer");
+    const titleEl = document.getElementById("videoModalTitle");
+
+    titleEl.textContent = title;
+    source.src = url;
+    player.load();
+
+    const modalEl = document.getElementById("videoModal");
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+
+    // 모달 닫힐 때 영상 정지
+    modalEl.addEventListener("hidden.bs.modal", function () {
+      player.pause();
+      source.src = "";
+      player.load();
+    }, { once: true });
+
+    return;
+  }
+});
+</script>
+
+
+{% endblock %}
