@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Com2,Com1_movie,Com1_board
+from .models import Com2,Com2_movie,Com1_movie,Com1_board
 from .forms import Com2Form,Com1Form
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url='who:login')
 def com2_list(request):
 
+    com2_movie_list = Com2_movie.objects.all().order_by('-created_at')
     document_list = Com2.objects.all().order_by('-created_at')
 
     # 페이지네이터: 한 페이지에 10개씩
@@ -19,7 +20,7 @@ def com2_list(request):
     page_obj = paginator.get_page(page_number)
 
     # 템플릿으로 전달
-    return render(request, 'community2/com2_list.html', {'page_obj': page_obj})
+    return render(request, 'community2/com2_list.html', {'com2_movie_list': com2_movie_list,'page_obj': page_obj})
 
 
 
