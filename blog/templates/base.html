@@ -35,6 +35,19 @@
     <link rel="stylesheet" href="{% static 'assets/css/volt.css' %}">
   <script src="{% static 'assets/js/volt.js' %}"></script>
   -->
+
+    <style>
+  .lesson-card-text { flex: 1 1 auto; min-width: 0; } /* 폭 고정 핵심 */
+  .lesson-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .line-clamp-3{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+</style>
+
 </head>
 
 <body>
@@ -244,7 +257,7 @@
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
                             <h4 class="text-primary text-uppercase mb-4">Newsletter</h4>
-                            <p>Amet justo diam dolor rebum lorem sit stet sea justo kasd</p>
+                            <p>회원 가입 하시고 최신 정보와 다양한 예제를 만나보세요.</p>
                             <form action="">
                                 <div class="input-group">
                                     <input type="text" class="form-control border-white p-3" placeholder="Your Email">
