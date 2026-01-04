@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+
+<br>
+<br>
+  <div class="container my-3 text-center">
+    <div class="border border-secondary text-center py-2">
+    <a class="navbar-brand fw-semibold" href="#">My Shop</a>
+      </div>
+  </div>
+
+
+<main class="container py-4">
+
+  <!-- 제품명 -->
+  <h1 class="h4 fw-semibold mb-3">{{ product.name }}</h1>
+
+  <div class="row g-4">
+    <!-- 왼쪽: 큰 이미지 -->
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="detail-img rounded" alt="{{ product.name }}">
+        {% else %}
+          <img src="{% static 'img/placeholder.png' %}" class="detail-img rounded" alt="no image">
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 오른쪽: 설명 + 수량 + 버튼 -->
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <!-- 설명 -->
+          <p class="text-muted mb-3">
+            {{ product.short_desc|default:"설명이 아직 등록되지 않았습니다." }}
+          </p>
+
+          <!-- 가격/재고 (원하면) -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="fw-semibold fs-5">₩ {{ product.price|floatformat:0 }}</div>
+            {% if product.stock > 0 %}
+              <span class="badge text-bg-success">재고 {{ product.stock }}</span>
+            {% else %}
+              <span class="badge text-bg-danger">품절</span>
+            {% endif %}
+          </div>
+
+          <!-- 수량 스핀 버튼 -->
+          <div class="mb-3">
+            <label class="form-label mb-1">수량</label>
+            <div class="input-group" style="max-width: 180px;">
+              <button class="btn btn-primary" type="button" id="qtyMinus">-</button>
+              <input type="number" class="form-control text-center" id="qtyInput" name="qty"
+                     value="1" min="1" {% if product.stock > 0 %}max="{{ product.stock }}"{% endif %}>
+              <button class="btn btn-primary" type="button" id="qtyPlus">+</button>
+            </div>
+            {% if product.stock <= 0 %}
+              <div class="small text-danger mt-1">품절 상품은 구매할 수 없습니다.</div>
+            {% endif %}
+          </div>
+
+          <!-- 버튼 2개 나란히 -->
+          <div class="d-flex gap-2">
+            <!-- 장바구니 담기 -->
+            <form method="post" action="{% url 'blog:cart_add' product.id %}" class="w-50">
+              {% csrf_token %}
+              <input type="hidden" name="qty" id="qtyHiddenCart" value="1">
+              <button type="submit" class="btn btn-primary w-100"
+                      {% if product.stock <= 0 %}disabled{% endif %}>
+                장바구니 담기
+              </button>
+            </form>
+
+            <!-- 바로결재: 일단 purchase_create 같은 URL로 연결(네 프로젝트에 맞춰 수정) -->
+            <form method="post" action="#" class="w-50">
+              {% csrf_token %}
+              <input type="hidden" name="qty" id="qtyHiddenBuy" value="1">
+              <button type="submit" class="btn btn-outline-dark w-100"
+                      {% if product.stock <= 0 %}disabled{% endif %}>
+                바로결재
+              </button>
+            </form>
+          </div>
+
+          <!-- 목록으로 -->
+          <div class="mt-3">
+            <a href="{% url 'blog:product_list' %}" class="text-decoration-none">← 목록으로</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+
+<script>
+  (function () {
+    const qtyInput = document.getElementById('qtyInput');
+    const qtyMinus = document.getElementById('qtyMinus');
+    const qtyPlus = document.getElementById('qtyPlus');
+
+    const qtyHiddenCart = document.getElementById('qtyHiddenCart');
+    const qtyHiddenBuy = document.getElementById('qtyHiddenBuy');
+
+    const min = parseInt(qtyInput.min || "1", 10);
+    const maxAttr = qtyInput.getAttribute('max');
+    const max = maxAttr ? parseInt(maxAttr, 10) : null;
+
+    function clampAndSync(val) {
+      let v = parseInt(val || "1", 10);
+      if (isNaN(v)) v = 1;
+      if (v < min) v = min;
+      if (max !== null && v > max) v = max;
+
+      qtyInput.value = v;
+      qtyHiddenCart.value = v;
+      qtyHiddenBuy.value = v;
+    }
+
+    qtyMinus.addEventListener('click', () => clampAndSync(parseInt(qtyInput.value, 10) - 1));
+    qtyPlus.addEventListener('click', () => clampAndSync(parseInt(qtyInput.value, 10) + 1));
+    qtyInput.addEventListener('input', () => clampAndSync(qtyInput.value));
+
+    // 초기 동기화
+    clampAndSync(qtyInput.value);
+  })();
+</script>
+{% endblock %}

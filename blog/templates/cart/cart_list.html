@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<br>
+<br>
+  <div class="container my-3 text-center">
+    <div class="border border-secondary text-center py-2">
+    <a class="navbar-brand fw-semibold" href="#">My Shop</a>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'blog:product_list' %}">계속 쇼핑하기</a>
+      </div>
+  </div>
+
+
+<main class="container py-4">
+
+  <h1 class="h4 fw-semibold mb-3">장바구니</h1>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-2" role="alert">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if not items %}
+    <div class="alert alert-secondary">장바구니가 비어있어요.</div>
+  {% else %}
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3">상품</th>
+                <th class="text-end">가격</th>
+                <th class="text-center">수량</th>
+                <th class="text-end">소계</th>
+                <th class="text-end pe-3">관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for it in items %}
+              <tr>
+                <td class="ps-3">
+                  <div class="d-flex gap-3 align-items-center">
+                    {% if it.product.image %}
+                      <img src="{{ it.product.image.url }}" class="rounded thumb_cart" alt="{{ it.name }}">
+                    {% else %}
+                      <img src="{% static 'img/placeholder.png' %}" class="rounded thumb_cart" alt="no image">
+                    {% endif %}
+
+                    <div>
+                      <div class="fw-semibold">{{ it.name }}</div>
+                      <div class="text-muted small">
+                        {% if it.product.category %}{{ it.product.category.name }} · {% endif %}
+                        재고: {{ it.product.stock }}
+                      </div>
+                      <a class="small text-decoration-none" href="{% url 'blog:product_detail' it.product.id %}">
+                        상세 보기 →
+                      </a>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="text-end">
+                  ₩ {{ it.price|floatformat:0 }}
+                </td>
+
+                <td class="text-center" style="min-width: 170px;">
+                  <form method="post" action="{% url 'blog:cart_update' it.pid %}" class="d-flex justify-content-center gap-2">
+                    {% csrf_token %}
+                    <input type="number"
+                           name="qty"
+                           value="{{ it.qty }}"
+                           min="1"
+                           max="{{ it.max_qty }}"
+                           class="form-control form-control-sm text-center"
+                           style="width: 90px;">
+                    <button class="btn btn-sm btn-primary" type="submit">변경</button>
+                  </form>
+                </td>
+
+                <td class="text-end">
+                  ₩ {{ it.subtotal|floatformat:0 }}
+                </td>
+
+                <td class="text-end pe-3">
+                  <form method="post" action="{% url 'blog:cart_remove' it.pid %}" class="d-inline">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-outline-danger" type="submit">삭제</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+        <div class="text-muted small">
+          배송비/쿠폰은 결제 단계에서 적용할 수 있어요.
+        </div>
+        <div class="fw-semibold fs-5">
+          총합: ₩ {{ total|floatformat:0 }}
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <a href="{% url 'blog:product_list' %}" class="btn btn-primary">계속 쇼핑하기</a>
+      <!-- 결제 페이지 아직 없으면 버튼만 만들어두고 URL은 나중에 -->
+      <a href="#" class="btn btn-dark">결제하기</a>
+    </div>
+  {% endif %}
+
+</main>
+{% endblock %}

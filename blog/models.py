@@ -22,3 +22,46 @@ class Subject(models.Model):
     def __str__(self):
         return self.title
 
+
+class MyCategory(models.Model):
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name="카테고리명"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "category"
+        verbose_name = "카테고리"
+        verbose_name_plural = "카테고리 목록"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class MyProduct(models.Model):
+    category = models.ForeignKey(
+        MyCategory,
+        on_delete=models.PROTECT,
+        related_name="products",
+        verbose_name="카테고리"
+    )
+
+    name = models.CharField(max_length=200, verbose_name="상품명")
+    price = models.PositiveIntegerField(verbose_name="가격")
+    image = models.ImageField(upload_to="products/", blank=True, null=True)
+    short_desc = models.CharField(max_length=255, blank=True)
+    stock = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "myproduct"
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.name

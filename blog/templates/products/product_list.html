@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block content %}
+
+
+<br>
+<br>
+  <div class="container my-3 text-center">
+    <div class="border border-secondary text-center py-2">
+    <a class="navbar-brand fw-semibold" href="#">My Shop</a>
+      </div>
+  </div>
+
+
+<main class="container py-4">
+
+  <div class="d-flex flex-wrap gap-2 mb-3 justify-content-center align-items-center">
+  <a class="btn btn-sm {% if not active_category %}btn-primary{% else %}btn-outline-primary{% endif %}"
+     href="{% url 'blog:product_list' %}">전체</a>
+ <!-- 카테고리 필터 -->
+  {% for c in categories %}
+    <a class="btn btn-sm {% if active_category and active_category.id == c.id %}btn-primary{% else %}btn-outline-primary{% endif %}"
+       href="{% url 'blog:product_list_by_category' c.id %}">{{ c.name }}</a>
+  {% endfor %}
+
+    <form method="get" class="mb-0">
+  <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+    <option value="new" {% if sort == "new" %}selected{% endif %}>최신순</option>
+    <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>가격 낮은순</option>
+    <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>가격 높은순</option>
+    <option value="name" {% if sort == "name" %}selected{% endif %}>이름순</option>
+  </select>
+</form>
+</div>
+
+
+
+  <!-- 상품 그리드 -->
+  <div class="row g-3">
+    {% for p in products %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card h-100">
+
+          <!-- 이미지 -->
+          <a href="{% url 'blog:product_detail' p.id %}" class="text-decoration-none">
+            {% if p.image %}
+              <img src="{{ p.image.url }}" class="card-img-top thumb_gallery" alt="{{ p.name }}">
+            {% else %}
+              <img src="{% static 'img/placeholder.png' %}" class="card-img-top thumb_gallery" alt="no image">
+            {% endif %}
+          </a>
+
+          <div class="card-body d-flex flex-column">
+
+            <!-- 상품명 + 간단 설명 -->
+            <div class="mb-3">
+              <div class="fw-semibold mb-1">{{ p.name }}</div>
+              <p class="text-muted small mb-0 line-clamp-2">
+                {{ p.short_desc }}
+              </p>
+            </div>
+
+            <!-- 가격 -->
+            <div class="fw-semibold mb-2">
+              ₩ {{ p.price|floatformat:0 }}
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="mt-auto">
+              <div class="d-flex gap-2">
+                <a href="{% url 'blog:product_detail' p.id %}"
+                   class="btn btn-outline-primary btn-sm w-50">
+                  상세페이지
+                </a>
+
+                <form method="post"
+                      action="{% url 'blog:cart_add' p.id %}"
+                      class="w-50">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="btn btn-primary btn-sm w-100"
+                          {% if p.stock <= 0 %}disabled{% endif %}>
+                    카트 담기
+                  </button>
+                </form>
+              </div>
+
+              {% if p.stock <= 0 %}
+                <div class="text-danger small mt-1">품절</div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-secondary">
+          등록된 상품이 없습니다.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
