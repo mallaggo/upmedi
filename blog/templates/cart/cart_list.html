@@ -5,6 +5,18 @@
 
 {% block content %}
 
+<!-- About Start -->
+    <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+                <h2 class="text-primary font-secondary">Ecommerce</h2>
+                <h1 class="display-4 text-uppercase">Welcome To MyShop</h1>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+
 <br>
 <br>
   <div class="container my-3 text-center">
@@ -19,13 +31,6 @@
 
   <h1 class="h4 fw-semibold mb-3">장바구니</h1>
 
-  {% if messages %}
-    <div class="mb-3">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} mb-2" role="alert">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
 
   {% if not items %}
     <div class="alert alert-secondary">장바구니가 비어있어요.</div>
