@@ -1,10 +1,10 @@
 from django.contrib import admin
 from .models import Subject,Category,MyCategory,MyProduct
-from post.models import Post
+
 
 admin.site.register(Category)
 admin.site.register(Subject)
-admin.site.register(Post)
+
 
 
 
