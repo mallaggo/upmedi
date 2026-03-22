@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width: 700px;">
+
+<!-- 제목 -->
+<div class="text-center mb-4">
+    <h2 class="text-primary">문의 게시판</h2>
+    <hr style="width: 60px; margin: auto;">
+</div>
+
+<!-- 작성 카드 -->
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h5 class="mb-4">✏️ 글 작성</h5>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- 제목 -->
+            <div class="mb-3">
+                <label class="form-label">제목</label>
+                {{ form.title }}
+            </div>
+
+            <!-- 내용 -->
+            <div class="mb-3">
+                <label class="form-label">내용</label>
+                {{ form.content }}
+            </div>
+
+            <!-- 버튼 -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">
+                    작성하기
+                </button>
+                 <a href="{% url 'post:post_list' %}" class="btn btn-primary">
+                    취소
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+

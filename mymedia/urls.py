@@ -23,11 +23,12 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('blog.urls')),
-    path('blog/',include('blog.urls')),
-    #path('blog/',include('blog.urls')),
-    #path("accounts/", include("django.contrib.auth.urls")),
+    path('accounts/',include('who.urls')),
     path('who/', include('who.urls')),
     path('board/', include('board.urls')),
+    path('post/',include('post.urls')),
 
-              ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
-urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
+    ]
+if settings.DEBUG:
+    static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+    urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

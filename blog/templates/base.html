@@ -157,7 +157,7 @@
                     </div>
                 </div>
 
-                <a href="#" class="nav-item nav-link me-5">건의합니다</a>
+                <a href="{% url 'post:post_list' %}" class="nav-item nav-link me-5">건의합니다</a>
 
                 <div class="nav-item dropdown">
                 {% if user.is_authenticated %}
