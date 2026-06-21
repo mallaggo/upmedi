@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
-
+from .models import ChatMessage
 from openai import OpenAI
 
 import json
@@ -13,7 +13,12 @@ client = OpenAI(
 
 @login_required(login_url='who:login')
 def chat_page(request):
-    return render(request, "gpt/chat.html")
+    messages = ChatMessage.objects.filter(
+        user=request.user
+    )
+
+    return render( request,"gpt/chat.html", {"messages": messages })
+
 
 
 @login_required(login_url='who:login')
@@ -31,13 +36,30 @@ def ask_gpt(request):
 
         question = data.get("question", "")
 
+        # 사용자 질문 저장
+
+        ChatMessage.objects.create(
+            user=request.user,
+            role="user",
+            content=question
+        )
+
         response = client.responses.create(
             model="gpt-5-mini",
             input=question
         )
 
+        answer = response.output_text
+        # GPT 답변 저장
+
+        ChatMessage.objects.create(
+            user=request.user,
+            role="assistant",
+            content=answer
+        )
+
         return JsonResponse({
-            "answer": response.output_text
+            "answer": answer
         })
 
     except Exception as e:
@@ -45,3 +67,6 @@ def ask_gpt(request):
         return JsonResponse({
             "answer": f"오류 발생 : {str(e)}"
         })
+
+
+
