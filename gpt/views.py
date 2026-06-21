@@ -1,4 +1,4 @@
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
@@ -11,10 +11,12 @@ client = OpenAI(
     api_key=settings.OPENAI_API_KEY
 )
 
+@login_required(login_url='who:login')
 def chat_page(request):
     return render(request, "gpt/chat.html")
 
 
+@login_required(login_url='who:login')
 def ask_gpt(request):
 
     if request.method != "POST":
