@@ -27,6 +27,7 @@ urlpatterns = [
     path('who/', include('who.urls')),
     path('board/', include('board.urls')),
     path('post/',include('post.urls')),
+    path('gpt/',include('gpt.urls')),
 
     ]
 if settings.DEBUG:
