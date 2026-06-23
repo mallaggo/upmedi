@@ -197,26 +197,39 @@ body{
 <!-- 본문 -->
 
 <div class="main-container">
+ <input
+    type="hidden"
+    id="sessionId"
+    value="{{ current_session.id }}"
+ >
 
     <!-- 왼쪽 -->
-
     <div class="sidebar">
+        <br>
+{% for session in sessions %}
 
-        <button class="new-chat">
-            + 새 대화
-        </button>
+<div>
 
-        <div class="chat-item">
-            ERP 질문
-        </div>
+    {% if session.id == current_session.id %}
+    ▶
+    {% endif %}
 
-        <div class="chat-item">
-            엑셀 함수
-        </div>
+    <a href="/gpt/{{ session.id }}/">
+    {% if session.title %}
+        {{ session.title }}
+    {% else %}
+        새 대화
+    {% endif %}
+    </a>
+    <a href="/gpt/delete/{{ session.id }}/">[X]</a>
 
-        <div class="chat-item">
-            파이썬 실습
-        </div>
+</div>
+
+{% endfor %}
+
+        <a href="/gpt/new/">
+        + 새 대화
+        </a>
 
     </div>
 
@@ -280,6 +293,22 @@ document.getElementById("uploadBtn")
 
 });
 
+    document.getElementById("fileUpload")
+.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(file){
+
+        alert(
+            "선택된 파일 : " +
+            file.name
+        );
+
+    }
+
+});
+
 </script>
 
 
@@ -317,52 +346,91 @@ document.getElementById("sendBtn")
 
     document.getElementById("question").value = "";
 
-    chatArea.scrollTop =
-        chatArea.scrollHeight;
+    chatArea.scrollTop = chatArea.scrollHeight;
 
-    try {
 
-        const response = await fetch(
-            "/gpt/ask/",
-            {
-                method:"POST",
+try {
 
-                headers:{
-                    "Content-Type":"application/json",
-                    "X-CSRFToken":"{{ csrf_token }}"
-                },
+    const formData = new FormData();
 
-                body:JSON.stringify({
-                    question:question
-                })
-            }
+    formData.append(
+        "question",
+        question
+    );
+
+    formData.append(
+        "session_id",
+        document.getElementById(
+            "sessionId"
+        ).value
+    );
+
+    const file =
+        document.getElementById(
+            "fileUpload"
+        ).files[0];
+
+    if(file){
+
+        formData.append(
+            "file",
+            file
         );
-
-        const data = await response.json();
-
-        // 대기 메시지를 실제 답변으로 교체
-
-        document.getElementById("loadingMessage")
-            .outerHTML = `
-            <div class="message gpt">
-                <span>${data.answer}</span>
-            </div>
-        `;
-
-    } catch(error){
-
-        document.getElementById("loadingMessage")
-            .outerHTML = `
-            <div class="message gpt">
-                <span>오류가 발생했습니다.</span>
-            </div>
-        `;
-
-        console.error(error);
     }
 
-    chatArea.scrollTop =
-        chatArea.scrollHeight;
+    const response = await fetch(
+        "/gpt/ask/",
+        {
+            method:"POST",
+
+            headers:{
+                "X-CSRFToken":"{{ csrf_token }}"
+            },
+
+            body: formData
+        }
+    );
+
+    const data = await response.json();
+    if(data.title){
+
+    const currentLink =
+        document.querySelector(
+            `a[href="/gpt/${document.getElementById("sessionId").value}/"]`
+        );
+
+    if(currentLink){
+
+        currentLink.textContent =
+            data.title;
+    }
+}
+    document.getElementById(
+        "fileUpload"
+    ).value = "";
+
+
+    document.getElementById("loadingMessage")
+        .outerHTML = `
+        <div class="message gpt">
+            <span>${data.answer}</span>
+        </div>
+    `;
+
+} catch(error){
+
+    document.getElementById("loadingMessage")
+        .outerHTML = `
+        <div class="message gpt">
+            <span>오류가 발생했습니다.</span>
+        </div>
+    `;
+
+    console.error(error);
+}
+
+chatArea.scrollTop =
+    chatArea.scrollHeight;
 
 });
 
