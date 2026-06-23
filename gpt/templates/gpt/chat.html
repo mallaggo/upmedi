@@ -47,11 +47,16 @@ body{
 /* =========================
    본문
 ========================= */
-
+/*
 .main-container{
     flex:1;
     display:flex;
     overflow:hidden;
+}*/
+
+.main-container{
+    display:flex;
+    height:calc(100vh - 60px);
 }
 
 /* =========================
@@ -59,37 +64,71 @@ body{
 ========================= */
 
 .sidebar{
-    width:260px;
-    border-right:1px solid #ddd;
-    background:#fafafa;
+    width:280px;
+    background:#f8f9fa;
+    border-right:1px solid #dee2e6;
     padding:15px;
     overflow-y:auto;
 }
 
-.new-chat{
+.sidebar a{
+    text-decoration:none;
+}
+
+.sidebar .new-chat-btn{
+    display:block;
     width:100%;
     padding:12px;
     margin-bottom:15px;
-    cursor:pointer;
+
+    background:#0d6efd;
+    color:white;
+
+    text-align:center;
+    border-radius:10px;
     font-weight:bold;
 }
 
-.chat-item{
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:6px;
-    margin-bottom:10px;
-    cursor:pointer;
+.sidebar .new-chat-btn:hover{
+    background:#0b5ed7;
 }
 
-.chat-item:hover{
-    background:#f0f0f0;
+.session-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:10px;
+    margin-bottom:8px;
+
+    border-radius:8px;
+
+    transition:0.2s;
+}
+
+.session-item:hover{
+    background:#e9ecef;
+}
+
+.session-link{
+    flex:1;
+    color:#212529;
+}
+
+.session-active{
+    background:#dbeafe;
+    font-weight:bold;
+}
+
+.delete-link{
+    color:#dc3545;
+    margin-left:10px;
+    font-size:14px;
 }
 
 /* =========================
    오른쪽 GPT 영역
 ========================= */
-
 .chat-container{
     flex:1;
     display:flex;
@@ -98,17 +137,17 @@ body{
 
 .chat-area{
     flex:1;
-    padding:20px;
     overflow-y:auto;
-    background:white;
+    padding:20px;
 }
 
 .message{
-    margin-bottom:20px;
+    margin-bottom:15px;
+    max-width:80%;
 }
 
 .user{
-    text-align:right;
+    margin-left:auto;
 }
 
 .user span{
@@ -119,6 +158,10 @@ body{
     color:white;
     border-radius:12px;
     white-space: pre-wrap;
+}
+
+.gpt{
+    margin-right:auto;
 }
 
 .gpt span{
@@ -173,6 +216,12 @@ body{
     font-size:13px;
     cursor:pointer;
 }
+#question{
+    width:100%;
+    border-radius:10px;
+    border:1px solid #ced4da;
+    padding:10px;
+}
 
 </style>
 </head>
@@ -208,28 +257,26 @@ body{
         <br>
 {% for session in sessions %}
 
-<div>
-
+<div class="
+    session-item
     {% if session.id == current_session.id %}
-    ▶
+        session-active
     {% endif %}
+">
 
-    <a href="/gpt/{{ session.id }}/">
-    {% if session.title %}
+    <a href="/gpt/{{ session.id }}/" class="session-link">
+        {% if session.title %}
         {{ session.title }}
-    {% else %}
-        새 대화
-    {% endif %}
+        {% endif %}
     </a>
-    <a href="/gpt/delete/{{ session.id }}/">[X]</a>
+
+    <a href="/gpt/delete/{{ session.id }}/" class="delete-link">✕ </a>
 
 </div>
 
 {% endfor %}
 
-        <a href="/gpt/new/">
-        + 새 대화
-        </a>
+    <a href="/gpt/new/" class="new-chat-btn">＋ 새 대화</a>
 
     </div>
 
@@ -255,26 +302,18 @@ body{
 
         <div class="input-area">
 
-        <textarea
-        id="question"
-        rows="4"
-        placeholder="질문을 입력하세요...">
-        </textarea>
+        <textarea id="question" rows="4" placeholder="질문을 입력하세요..."></textarea>
 
             <div class="input-buttons">
 
-                <button id="sendBtn">
-                    전송
-                </button>
+                <button id="sendBtn" class="btn btn-primary">전송</button>
 
                 <input
                     type="file"
                     id="fileUpload"
                     hidden>
 
-                <button id="uploadBtn">
-                    파일 업로드
-                </button>
+                <button id="uploadBtn" class="btn btn-outline-secondary">📎 파일</button>
 
             </div>
 

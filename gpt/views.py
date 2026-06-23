@@ -143,6 +143,15 @@ def ask_gpt(request):
 
             response = client.responses.create(
                 model="gpt-5-mini",
+
+                instructions="""
+                   기본적으로 짧고 핵심만 답변하라.
+                    사용자가 자세히 설명해달라고 요청하지 않으면
+                    3문장 이내로 답변하라.
+                    숫자, 합계, 개수, 결과는 먼저 제시하라.
+                    불필요한 인사말과 장황한 설명은 생략하라.
+                   """,
+
                 input=[
                     {
                         "role": "user",
@@ -164,11 +173,18 @@ def ask_gpt(request):
 
             response = client.responses.create(
                 model="gpt-5-mini",
+                instructions="""
+                기본적으로 짧고 핵심만 답변하라.
+                사용자가 자세히 설명해달라고 요청하지 않으면
+                3문장 이내로 답변하라.
+                숫자, 합계, 개수, 결과는 먼저 제시하라.
+                불필요한 인사말과 장황한 설명은 생략하라.
+                """,
                 input=question
             )
 
         answer = response.output_text
-
+        print(repr(answer))
         # GPT 답변 저장
 
         ChatMessage.objects.create(
