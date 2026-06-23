@@ -184,7 +184,6 @@ def ask_gpt(request):
             )
 
         answer = response.output_text
-        print(repr(answer))
         # GPT 답변 저장
 
         ChatMessage.objects.create(
