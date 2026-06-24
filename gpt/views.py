@@ -143,8 +143,8 @@ def ask_gpt(request):
             response = client.responses.create(
                 model="gpt-5-mini",
 
-                instructions="""
-                   짧고 핵심만 답변하라.
+                instructions="""               
+               답변은 간결하게 작성하라.
                    """,
 
                 input=[
@@ -168,8 +168,8 @@ def ask_gpt(request):
 
             response = client.responses.create(
                 model="gpt-5-mini",
-                instructions="""
-                짧고 핵심만 답변하라.
+                instructions="""                
+                답변은 간결하게 작성하라.
                 """,
                 input=question
             )
