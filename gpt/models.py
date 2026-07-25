@@ -18,6 +18,16 @@ class ChatSession(models.Model):
         auto_now_add=True
     )
 
+    last_response_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    last_tool_result = models.JSONField(
+        default=dict,
+        blank=True
+    )
+
     def __str__(self):
         return self.title
 

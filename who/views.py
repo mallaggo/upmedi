@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.template.loader import render_to_string
-
+from .mail import send_mail_message
 from .forms import SignUpForm,LoginForm
 from .models import CustomUser
 from django.core.mail import EmailMultiAlternatives
@@ -13,28 +13,43 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # 인증 전까지 로그인 불가
+            user.is_active = False
             user.save()
 
             token = str(user.email_verification_token)
-            verification_link = request.build_absolute_uri(f"/who/verify-email/{token}/")
+            verification_link = request.build_absolute_uri(
+                f"/who/verify-email/{token}/"
+            )
 
-            # HTML 이메일 내용 렌더링
             subject = "이메일 인증 안내"
-            from_email = settings.EMAIL_HOST_USER
             to = [user.email]
 
-            context = {"user": user, "verification_link": verification_link}
-            text_content = render_to_string("registration/email_verification.txt", context)  # 텍스트 버전
-            html_content = render_to_string("registration/email_verification.html", context)  # HTML 버전
+            context = {
+                "user": user,
+                "verification_link": verification_link
+            }
 
-            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            text_content = render_to_string(
+                "registration/email_verification.txt",
+                context
+            )
+
+            html_content = render_to_string(
+                "registration/email_verification.html",
+                context
+            )
+
+            send_mail_message(
+                to=to,
+                subject=subject,
+                text_content=text_content,
+                html_content=html_content,
+            )
 
             return render(request, "registration/email_verification_sent.html")
     else:
         form = SignUpForm()
+
     return render(request, "registration/signup.html", {"form": form})
 
 

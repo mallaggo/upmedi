@@ -354,6 +354,25 @@ document.getElementById("uploadBtn")
 
 <script>
 
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
 document.getElementById("sendBtn")
 .addEventListener("click", async function(){
 
@@ -417,18 +436,13 @@ try {
         );
     }
 
-    const response = await fetch(
-        "/gpt/ask/",
-        {
-            method:"POST",
-
-            headers:{
-                "X-CSRFToken":"{{ csrf_token }}"
-            },
-
-            body: formData
-        }
-    );
+    const response = await fetch("/gpt/ask/", {
+    method: "POST",
+    headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+    },
+    body: formData
+    });
 
     const data = await response.json();
     if(data.title){
@@ -449,12 +463,25 @@ try {
     ).value = "";
 
 
-    document.getElementById("loadingMessage")
-        .outerHTML = `
-        <div class="message gpt">
-            <span>${data.answer}</span>
-        </div>
+    let html = `
+<div class="message gpt">
+    <span>${data.answer}</span>
+`;
+
+if (data.download_url) {
+    html += `
+        <br><br>
+        <a href="${data.download_url}" target="_blank">
+            📥 엑셀 다운로드
+        </a>
     `;
+}
+
+html += `
+</div>
+`;
+
+document.getElementById("loadingMessage").outerHTML = html;
 
 } catch(error){
 
