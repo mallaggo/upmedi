@@ -228,7 +228,6 @@ def ask_gpt(request):
         question = request.POST.get("question", "")
         session_id = request.POST.get("session_id")
         uploaded_file = request.FILES.get("file")
-        print("uploaded_file =", uploaded_file)
 
         file_id = None
 
@@ -256,7 +255,6 @@ def ask_gpt(request):
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
 
-            print(f"파일 저장 완료 : {file_path}")
 
             # -----------------------------
             # 저장된 파일을 OpenAI 업로드
@@ -314,7 +312,6 @@ def ask_gpt(request):
                 "uploaded_filename",
                 uploaded_file.name
             )
-        print(context.data)
 
         response = create_response(
             session,
