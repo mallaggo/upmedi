@@ -60,8 +60,7 @@ READ_EXCEL_PRODUCTS_TOOL = {
 
 
 
-def search_product(keyword=None, category=None, min_price=None, max_price=None, stock=None):
-
+def search_product(keyword=None, category=None, min_price=None, max_price=None, stock=None, context=None):
 
     products = MyProduct.objects.select_related("category")
 

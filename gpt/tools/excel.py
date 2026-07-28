@@ -39,7 +39,7 @@ EXCEL_TOOL = {
 }
 
 
-def create_excel_file(filename, headers, rows):
+def create_excel_file(filename, headers, rows, context=None):
 
     # 파일명 보안 처리
     filename = os.path.basename(filename)
