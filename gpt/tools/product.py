@@ -2,6 +2,9 @@ from difflib import get_close_matches
 from blog.models import MyProduct
 from django.db.models import Value
 from django.db.models.functions import Replace
+import os
+import openpyxl
+from django.conf import settings
 
 
 SEARCH_PRODUCT_TOOL = {
@@ -43,6 +46,18 @@ SEARCH_PRODUCT_TOOL = {
         }
     }
 }
+
+READ_EXCEL_PRODUCTS_TOOL = {
+    "type": "function",
+    "name": "read_excel_products",
+    "description": "현재 업로드된 엑셀 파일에서 상품 정보를 읽는다.",
+    "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": False
+    }
+}
+
 
 
 def search_product(keyword=None, category=None, min_price=None, max_price=None, stock=None):
@@ -125,3 +140,120 @@ def search_product(keyword=None, category=None, min_price=None, max_price=None, 
         "corrected_keyword": real_name,
         "data": result
     }
+
+
+
+
+def read_excel_products(context=None):
+    """
+    엑셀 파일을 읽어 상품 데이터를 반환한다.
+    DB에는 저장하지 않는다.   """
+    filename = context.get("uploaded_filename")
+
+    filepath = os.path.join(
+        settings.MEDIA_ROOT,
+        "excel",
+        filename
+    )
+
+    wb = openpyxl.load_workbook(filepath, data_only=True)
+    ws = wb.active
+
+    # -----------------------------
+    # 헤더 읽기
+    # -----------------------------
+    headers = [str(cell.value).strip() if cell.value else "" for cell in ws[1]]
+
+    header_map = {
+        "카테고리": "category",
+        "상품명": "name",
+        "가격": "price",
+        "재고": "stock",
+        "설명": "short_desc",
+    }
+
+    columns = {}
+
+    for idx, header in enumerate(headers):
+        if header in header_map:
+            columns[header_map[header]] = idx
+
+    # 필수 컬럼 검사
+    required = ["name", "price"]
+
+    missing = [field for field in required if field not in columns]
+
+    if missing:
+        return {
+            "success": False,
+            "message": f"필수 컬럼이 없습니다. ({', '.join(missing)})"
+        }
+
+    products = []
+    errors = []
+
+    # -----------------------------
+    # 데이터 읽기
+    # -----------------------------
+    for row_num, row in enumerate(
+            ws.iter_rows(min_row=2, values_only=True),
+            start=2
+    ):
+
+        if not any(row):
+            continue
+
+        category = row[columns["category"]] if "category" in columns else ""
+        name = row[columns["name"]]
+        price = row[columns["price"]]
+        stock = row[columns["stock"]] if "stock" in columns else 0
+        short_desc = row[columns["short_desc"]] if "short_desc" in columns else ""
+
+        # 상품명
+        if not name:
+            errors.append({
+                "row": row_num,
+                "message": "상품명이 없습니다."
+            })
+            continue
+
+        # 가격
+        try:
+            price = int(price or 0)
+        except:
+            errors.append({
+                "row": row_num,
+                "message": "가격이 숫자가 아닙니다."
+            })
+            continue
+
+        # 재고
+        try:
+            stock = int(stock or 0)
+        except:
+            errors.append({
+                "row": row_num,
+                "message": "재고가 숫자가 아닙니다."
+            })
+            continue
+
+        products.append({
+            "row": row_num,
+            "category": str(category or "").strip(),
+            "name": str(name).strip(),
+            "price": price,
+            "stock": stock,
+            "short_desc": str(short_desc or "").strip(),
+        })
+
+    result = {
+        "success": len(errors) == 0,
+        "message": f"{len(products)}개의 상품을 읽었습니다.",
+        "data": products,
+        "errors": errors,
+    }
+
+    if context is not None:
+        context.set("read_excel_products", result)
+
+    return result

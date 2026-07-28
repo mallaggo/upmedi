@@ -47,7 +47,10 @@ class ToolExecutor:
             )
 
         try:
-            result = tool(**arguments)
+            result = tool(
+                context=context,
+                **arguments
+            )
 
         except Exception as e:
 
@@ -74,7 +77,16 @@ class ToolExecutor:
 
     def run(self, response, context):
 
+        max_iterations = 10
+        iteration = 0
+
         while True:
+
+            iteration += 1
+
+            if iteration > max_iterations:
+                raise RuntimeError("Tool 호출 횟수가 최대치를 초과했습니다.")
+
             tool_outputs = []
 
             for item in response.output:

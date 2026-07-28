@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import JsonResponse
@@ -28,36 +29,63 @@ INSTRUCTIONS = """
 
 3. 메일 발송을 요청한 경우에만 send_email Tool을 사용한다.
 
-4. 하나의 요청에 여러 작업이 포함되어 있으면 모든 작업이 완료될 때까지 필요한 Tool을 계속 호출한다.
+4. 엑셀 파일의 상품 등록을 요청한 경우에는
+반드시 read_excel_products Tool을 먼저 호출한다.
 
-예:
-상품 검색 → search_product
-엑셀 생성 → create_excel_file
-메일 발송 → send_email
+5. read_excel_products가 success=True이면
+반드시 save_products Tool을 호출하여
+상품을 데이터베이스에 저장한다.
 
-중간에 사용자에게 답변하지 않는다.
+6. 하나의 요청에 여러 작업이 포함되어 있으면
+모든 작업이 완료될 때까지 필요한 Tool을 계속 호출한다.
+
+예)
+
+상품 검색
+→ search_product
+
+엑셀 생성
+→ create_excel_file
+
+메일 발송
+→ send_email
+
+엑셀 상품 등록
+→ read_excel_products
+→ save_products
+
+7. 중간에 사용자에게 답변하지 않는다.
+
 모든 Tool 호출이 끝난 후 최종 답변을 작성한다.
 
-Tool을 호출하지 않고 작업이 완료된 것처럼 설명하거나,
+8. Tool을 호출하지 않고 작업이 완료된 것처럼 설명하거나,
 가상의 다운로드 링크를 생성하거나,
 메일을 보냈다고 답변해서는 안 된다.
+
 같은 Tool을 동일한 인수로 두 번 이상 연속 호출해서는 안 된다.
 
-5. Tool의 결과만을 근거로 답변한다.
+9. Tool의 결과만을 근거로 답변한다.
 
-6. Tool 검색 결과가 없으면
+10. Tool 결과가 success=False이면
+다음 Tool을 호출하지 말고
+오류 내용을 사용자에게 답변한다.
+
+11. Tool 검색 결과가 없으면
 "등록된 상품이 없습니다."
 라고만 답변한다.
 
-7. 사용자가 메일을 보낼 때 사람 이름이나 아이디를 말하면 to 배열에 그대로 넣어라.
+12. 사용자가 메일을 보낼 때 사람 이름이나 아이디를 말하면
+to 배열에 그대로 넣어라.
+
 이메일 주소를 말하면 이메일 주소를 그대로 넣어라.
+
 여러 명이면 to 배열에 모두 넣어라.
 
-8. 등록되지 않은 상품을 추측하지 않는다.
+13. 등록되지 않은 상품을 추측하지 않는다.
 
-9. 사용자가 요청하지 않은 작업은 수행하지 않는다.
+14. 사용자가 요청하지 않은 작업은 수행하지 않는다.
 
-10. 답변은 간결하게 작성한다.
+15. 답변은 간결하게 작성한다.
 """
 
 
@@ -200,19 +228,45 @@ def ask_gpt(request):
         question = request.POST.get("question", "")
         session_id = request.POST.get("session_id")
         uploaded_file = request.FILES.get("file")
+        print("uploaded_file =", uploaded_file)
 
         file_id = None
 
         if uploaded_file:
 
-            uploaded = client.files.create(
-                file=(
-                    uploaded_file.name,
-                    uploaded_file.read(),
-                    uploaded_file.content_type
-                ),
-                purpose="user_data"
+            # -----------------------------
+            # media/excel 폴더 저장
+            # -----------------------------
+            excel_dir = os.path.join(
+                settings.MEDIA_ROOT,
+                "excel"
             )
+
+            os.makedirs(
+                excel_dir,
+                exist_ok=True
+            )
+
+            file_path = os.path.join(
+                excel_dir,
+                uploaded_file.name
+            )
+
+            with open(file_path, "wb+") as destination:
+                for chunk in uploaded_file.chunks():
+                    destination.write(chunk)
+
+            print(f"파일 저장 완료 : {file_path}")
+
+            # -----------------------------
+            # 저장된 파일을 OpenAI 업로드
+            # -----------------------------
+            with open(file_path, "rb") as f:
+
+                uploaded = client.files.create(
+                    file=f,
+                    purpose="user_data"
+                )
 
             file_id = uploaded.id
 
@@ -254,7 +308,13 @@ def ask_gpt(request):
         # -----------------------------
 
         context = ToolContext(session)
-        # context.remove("create_excel_file")
+
+        if uploaded_file:
+            context.set(
+                "uploaded_filename",
+                uploaded_file.name
+            )
+        print(context.data)
 
         response = create_response(
             session,
