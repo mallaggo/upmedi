@@ -47,7 +47,7 @@ def send_email(
     subject,
     body,
     attachment="",
-    context=None
+    context=None,
 ):
     try:
 
