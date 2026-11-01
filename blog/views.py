@@ -225,3 +225,27 @@ def cart_remove(request, p_id):
     request.session.modified = True
 
     return redirect("blog:cart_list")
+
+def portfolio(request):
+    students = [
+        ("김학생", "여행 홈페이지", "img/students/student_01.jpg",
+         "https://example1.wixsite.com/site"),
+        ("이학생", "온라인 쇼핑몰", "img/students/student_02.jpg",
+         "https://example2.wixsite.com/site"),
+        ("박학생", "개인 포트폴리오", "img/students/student_03.jpg",
+         "https://example3.wixsite.com/site"),
+    ]
+
+    students = [
+        {
+            "name": name,
+            "description": description,
+            "thumbnail": thumbnail,
+            "url": url,
+        }
+        for name, description, thumbnail, url in students
+    ]
+
+    return render(request, "portfolio.html", {
+        "students": students,
+    })
