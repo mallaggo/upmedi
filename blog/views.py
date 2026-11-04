@@ -233,7 +233,7 @@ def portfolio(request):
         ("박춘자", "개인 포토폴리오", "img/students/student_02.png",
          "https://chunjab82.wixsite.com/my-site-5"),
         ("서우탁", "개인 포트폴리오", "img/students/student_03.png",
-         "ttps://a01088467664.wixsite.com/my-site-7"),
+         "https://a01088467664.wixsite.com/my-site-7"),
         ("최희연", "개인 포토폴리오", "img/students/student_04.png",
          "https://choiheeyeon0508.wixsite.com/my-site-6"),
         ("이선옥", "개인 포트폴리오", "img/students/student_05.png",
