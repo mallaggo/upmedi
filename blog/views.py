@@ -228,12 +228,26 @@ def cart_remove(request, p_id):
 
 def portfolio(request):
     students = [
-        ("김학생", "여행 홈페이지", "img/students/student_01.jpg",
-         "https://example1.wixsite.com/site"),
-        ("이학생", "온라인 쇼핑몰", "img/students/student_02.jpg",
-         "https://example2.wixsite.com/site"),
-        ("박학생", "개인 포트폴리오", "img/students/student_03.jpg",
-         "https://example3.wixsite.com/site"),
+        ("김희태", "개인 포토폴리오", "img/students/student_01.png",
+         "https://rhtks1128.wixsite.com/my-site-4"),
+        ("박춘자", "개인 포토폴리오", "img/students/student_02.png",
+         "https://chunjab82.wixsite.com/my-site-5"),
+        ("서우탁", "개인 포트폴리오", "img/students/student_03.png",
+         "ttps://a01088467664.wixsite.com/my-site-7"),
+        ("최희연", "개인 포토폴리오", "img/students/student_04.png",
+         "https://choiheeyeon0508.wixsite.com/my-site-6"),
+        ("이선옥", "개인 포트폴리오", "img/students/student_05.png",
+         "https://ingher234.wixsite.com/my-site-6"),
+        ("김정하", "개인 포토폴리오", "img/students/student_06.png",
+         "https://ciinooh.wixsite.com/my-site-4"),
+        ("김시영", "개인 포트폴리오", "img/students/student_07.png",
+         "https://kimsiyoung48.wixsite.com/my-site-5"),
+        ("류호인", "개인 포트폴리오", "img/students/student_08.png",
+         "https://aaa34140685.wixsite.com/my-site-5"),
+        ("조유화", "개인 포트폴리오", "img/students/student_09.png",
+         "https://01098952298a.wixsite.com/my-site-4"),
+        ("이재희", "개인 포트폴리오", "img/students/student_10.png",
+         "https://wavecanon.wixsite.com/my-site-5"),
     ]
 
     students = [
