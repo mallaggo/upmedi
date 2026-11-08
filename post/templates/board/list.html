@@ -40,7 +40,9 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="3" class="text-center text-muted py-4">
+                    <td colspan="3"
+                        class="text-center text-muted"
+                        style="height: 480px; vertical-align: middle;">
                         게시글이 없습니다.
                     </td>
                 </tr>
@@ -52,24 +54,68 @@
 </div>
 
 <!-- 버튼 영역 -->
-<div class="d-flex justify-content-between mt-4">
+<div class="d-flex justify-content-between align-items-center mt-4">
 
-    <!-- (선택) 검색 -->
-    <form method="get" class="d-flex">
-        <input type="text" name="q" class="form-control me-2" placeholder="검색">
-        <button class="btn btn-primary">검색</button>
+    <!-- 검색 -->
+    <form method="get" class="d-flex align-items-center gap-2">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="검색"
+               value="{{ search }}"
+               style="width: 200px;">
+
+        <button type="submit" class="btn btn-primary text-nowrap">
+            검색
+        </button>
     </form>
 
     <!-- 글쓰기 -->
     {% if user.is_authenticated %}
-    <a href="{% url 'post:post_create' %}" class="btn btn-primary">
+    <a href="{% url 'post:post_create' %}"
+       class="btn btn-primary text-nowrap">
         ✏️ 글 작성
     </a>
     {% endif %}
 
 </div>
 
+{% if posts.has_other_pages %}
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
 
+            {% if posts.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ posts.previous_page_number }}&q={{ search }}">
+                    이전
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in posts.paginator.page_range %}
+            <li class="page-item {% if posts.number == num %}active{% endif %}">
+                <a class="page-link"
+                   href="?page={{ num }}&q={{ search }}">
+                    {{ num }}
+                </a>
+            </li>
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ posts.next_page_number }}&q={{ search }}">
+                    다음
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+</div>
+{% endif %}
 </div>
 
 {% endblock %}

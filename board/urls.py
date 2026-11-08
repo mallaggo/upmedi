@@ -11,5 +11,7 @@ urlpatterns = [
     path('com1_detail/<int:pk>/', views.com1_detail, name='com1_detail'),
     path('com1_upload/', views.com1_upload, name='com1_upload'),
     path('py_list', views.py_list, name='py_list'),
+    path('com2/download/<int:pk>/', views.com2_file_download, name='com2_file_download'),
+    path('com1/download/<int:pk>/', views.com1_file_download, name='com1_file_download'),
 
 ]

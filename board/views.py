@@ -3,6 +3,8 @@ from .models import Com2,Com2_movie,Com1_movie,Com1_board
 from .forms import Com2Form,Com1Form
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from .models import Com2File, Com1File
+from django.http import FileResponse, Http404
 
 @login_required(login_url='who:login')
 def com2_list(request):
@@ -33,15 +35,50 @@ def com2_detail(request, pk):
 #     if value.size > max_size:
 #         raise ValidationError(f'파일 크기는 최대 {max_size / (1024*1024)}MB까지 허용됩니다.')
 
+def send_download(file_field):
+    if not file_field:
+        raise Http404("파일을 찾을 수 없습니다.")
+
+    filename = file_field.name.rsplit('/', 1)[-1]
+
+    return FileResponse(
+        file_field.open('rb'),
+        as_attachment=True,
+        filename=filename
+    )
+
+
+def com2_file_download(request, pk):
+    attachment = get_object_or_404(Com2File, pk=pk)
+    return send_download(attachment.file)
+
+
+def com1_file_download(request, pk):
+    attachment = get_object_or_404(Com1File, pk=pk)
+    return send_download(attachment.file)
+
 def com2_upload(request):
     if request.method == 'POST':
         form = Com2Form(request.POST, request.FILES)
+
         if form.is_valid():
-            form.save()
+            doc = form.save()
+
+            for uploaded_file in form.cleaned_data['files']:
+                Com2File.objects.create(
+                    document=doc,
+                    file=uploaded_file
+                )
+
             return redirect('board:com2_list')
     else:
         form = Com2Form()
-    return render(request, 'community2/com2_upload.html', {'form': form})
+
+    return render(
+        request,
+        'community2/com2_upload.html',
+        {'form': form}
+    )
 
 
 @login_required(login_url='who:login')
@@ -70,12 +107,25 @@ def com1_detail(request, pk):
 def com1_upload(request):
     if request.method == 'POST':
         form = Com1Form(request.POST, request.FILES)
+
         if form.is_valid():
-            form.save()
+            doc = form.save()
+
+            for uploaded_file in form.cleaned_data['files']:
+                Com1File.objects.create(
+                    document=doc,
+                    file=uploaded_file
+                )
+
             return redirect('board:com1_list')
     else:
         form = Com1Form()
-    return render(request, 'comwhal1/com1_upload.html', {'form': form})
+
+    return render(
+        request,
+        'comwhal1/com1_upload.html',
+        {'form': form}
+    )
 
 
 def py_list(request):

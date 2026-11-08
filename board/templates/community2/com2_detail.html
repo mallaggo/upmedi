@@ -4,21 +4,43 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-  <div class="p-4 rounded shadow" style="max-width:800px; margin:0 auto; background-color:#fff8f0;">
-    <h2 class="mb-3" style="color:#d35400;">{{ doc.title }}</h2>
-    <p class="mb-4">{{ doc.description }}</p>
-    <div class="d-flex justify-content-center gap-3 flex-wrap">
-      <a href="{{ doc.upload.url }}"
-         class="btn px-4 py-2"
-         style="background-color:#e67e22; border-color:#e67e22; color:#fff;">
-        파일 다운로드
-      </a>
-      <a href="{% url 'board:com2_list' %}"
-         class="btn px-4 py-2"
-         style="background-color:#95a5a6; border-color:#95a5a6; color:#fff;">
-        목록으로
-      </a>
+<div class="container-fluid about py-5">
+  <div class="container mt-5 text-center">
+    <div class="p-4 rounded shadow"
+         style="max-width:900px; min-height:400px; margin:0 auto; background-color:#fff8f0; display:flex; flex-direction:column; justify-content:center;">
+
+      <h2 class="mb-3" style="color:#d35400;">{{ doc.title }}</h2>
+
+      <div class="mb-4" style="min-height:100px;">
+        {{ doc.description }}
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+  {% if doc.upload %}
+    <a href="{{ doc.upload.url }}"
+       class="btn px-4 py-2"
+       style="background-color:#e67e22; color:#fff;">
+      기존 파일 다운로드
+    </a>
+  {% endif %}
+
+  {% for attachment in doc.attachments.all %}
+    <a href="{% url 'board:com2_file_download' attachment.pk %}"
+   class="btn px-4 py-2"
+   style="background-color:#e67e22; color:#fff;">
+    {{ attachment.file.name|cut:"uploads_com2/" }}
+  </a>
+  {% endfor %}
+
+  <a href="{% url 'board:com2_list' %}"
+     class="btn px-4 py-2"
+     style="background-color:#95a5a6; color:#fff;">
+    목록으로
+  </a>
+
+</div>
+
     </div>
   </div>
 </div>

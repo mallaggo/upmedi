@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='who:login')
 def post_list(request):
     search = request.GET.get('q', '')
     posts = Post.objects.all().order_by('-id')
@@ -12,7 +13,7 @@ def post_list(request):
     if search:
         posts = posts.filter(title__icontains=search)
 
-    paginator = Paginator(posts, 5)
+    paginator = Paginator(posts, 10)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
@@ -22,6 +23,7 @@ def post_list(request):
     })
 
 
+@login_required(login_url='who:login')
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = Comment.objects.filter(post=post)
